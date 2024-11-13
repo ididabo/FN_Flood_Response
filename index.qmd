@@ -1,0 +1,267 @@
+---
+title: "Flood Response in Far-North"
+author:  
+   Idrissa DABO/RAM Officer
+title-block-banner: "#D7DBDD"
+date-modified: "11/13/2024"
+date-format: "MM/D/YYYY"
+lang: fr
+language: 
+  title-block-author-single: "RAM WFP Cameroon"
+  title-block-modified: "Dernière Mise à Jour"
+format: 
+  html:
+    self-contained: true
+    toc: true
+    toc-location: right
+editor: visual
+---
+
+```{r echo=FALSE}
+htmltools::img(src = knitr::image_uri(file.path("image/WFP-logo.png")), 
+               alt = 'logo', 
+               style = 'position:absolute; top:0; right:0; padding:10px;',width = 200,height = 145)
+```
+
+
+## Ciblage Geographique
+
+```{r setup, include=FALSE}
+
+library(tidyverse)
+library(connectoModa)
+library(openxlsx)
+library(haven)
+library(labelled)
+library(gtsummary)
+library(fs)
+library(wordcloud)
+library(sf)
+library(leaflet)
+library(ggplot2)
+library(ggeasy)
+library(writexl)
+library(DT)
+library(echarts4r)
+library(fst)
+```
+
+Le ciblage géographique a été finalisé dans les différents arrondissements
+
+```{r echo=FALSE, warning=FALSE}
+situation <- readxl::read_xlsx("data/situation.xlsx")
+shape_cmr <- st_read("data/cmr_admbnda_inc_20180104_SHP/cmr_admbnda_adm3_inc_20180104.shp",quiet = T)
+situation <- situation |> left_join(
+  shape_cmr, by = "ADM3_PCODE"
+)
+
+# leaflet
+situation <- st_as_sf(situation)
+
+pal <-  colorFactor(palette = c("#c6ffc7", "#e02d00"),
+                    levels = c("completed", "Ongoing"))
+
+popupvalue <- paste0("<strong>Département:  </strong>",situation$Divisions,
+                     "<br><strong>Arrondissement:  </strong>",situation$`Subdivisions  `,
+                     "<br><strong>Modalité plannifiée:  </strong>",situation$Modality,
+                     "<br><strong>Plannification assistance WFP:  </strong>",situation$`People planned for WFP assistance `,
+                     "<br><strong>Geographical Targeting:  </strong>",situation$`Geographical targeting`) %>% 
+  lapply(htmltools::HTML)
+
+adminpopup <- paste0("<strong>Département:  </strong>",situation$Divisions,
+                     "<br><strong>Arrondissement:  </strong>",situation$`Subdivisions  `,
+                     "<br><strong>Modalité plannifiée:  </strong>",situation$Modality,
+                     "<br><strong>Plannification assistance WFP:  </strong>",situation$`People planned for WFP assistance `,
+                     "<br><strong>Geographical Targeting:  </strong>",situation$`Geographical targeting`) %>% 
+  lapply(htmltools::HTML)
+
+situation %>% leaflet() %>% 
+  addProviderTiles("CartoDB.Positron") %>%
+  # setView(lat= 13, lng=3, zoom=4) %>%
+  addPolygons(
+    fillColor = ~pal(situation$`Geographical targeting`),
+    fillOpacity = 0.7,
+    color = "white",
+    opacity = 0.7,
+    weight = 2,
+    dashArray = "2",
+    popup = popupvalue,
+    highlight = highlightOptions(
+      weight = 3,
+      color = "black",
+      fillOpacity = 1,
+      bringToFront = TRUE),
+    label = adminpopup,
+    labelOptions = labelOptions(
+      textsize = "12px",
+      direction = "auto"
+    )
+    
+  ) %>% addLegend(
+    pal = pal, values = ~situation$`Geographical targeting`,
+    opacity = 0.7, title = "Geographical tareting", position = "topright"
+  )
+```
+
+## Vérification/Priorisation
+
+Vérication et Priorisation La priorisation des bénéficiaires a été finalisé dans tous les arrondissements hormis à Kousseri  ou la collecte est encours et à Makari ou les ménages seront également enquêtés le plus rapidement possible.
+
+```{r echo=FALSE, warning=FALSE}
+situation <- readxl::read_xlsx("data/situation.xlsx")
+shape_cmr <- st_read("data/cmr_admbnda_inc_20180104_SHP/cmr_admbnda_adm3_inc_20180104.shp",quiet = T)
+situation <- situation |> left_join(
+  shape_cmr, by = "ADM3_PCODE"
+)
+
+situation <- st_as_sf(situation)
+
+pal <-  colorFactor(palette = c("#c6ffc7", "#e02d00","gray"),
+                    levels = c("complete", "ongoing","Not start"))
+
+popupvalue <- paste0("<strong>Département:  </strong>",situation$Divisions,
+                     "<br><strong>Arrondissement:  </strong>",situation$`Subdivisions  `,
+                     "<br><strong>Modalité plannifiée:  </strong>",situation$Modality,
+                     "<br><strong>Plannification assistance WFP:  </strong>",situation$`People planned for WFP assistance `,
+                     "<br><strong>Geographical Targeting:  </strong>",situation$`Beneficiary Targeting`) %>% 
+  lapply(htmltools::HTML)
+
+adminpopup <- paste0("<strong>Département:  </strong>",situation$Divisions,
+                     "<br><strong>Arrondissement:  </strong>",situation$`Subdivisions  `,
+                     "<br><strong>Modalité plannifiée:  </strong>",situation$Modality,
+                     "<br><strong>Plannification assistance WFP:  </strong>",situation$`People planned for WFP assistance `,
+                     "<br><strong>Geographical Targeting:  </strong>",situation$`Beneficiary Targeting`) %>% 
+  lapply(htmltools::HTML)
+
+situation %>% leaflet() %>% 
+  addProviderTiles("CartoDB.Positron") %>%
+  # setView(lat= 13, lng=3, zoom=4) %>%
+  addPolygons(
+    fillColor = ~pal(situation$`Beneficiary Targeting`),
+    fillOpacity = 0.7,
+    color = "white",
+    opacity = 0.7,
+    weight = 2,
+    dashArray = "2",
+    popup = popupvalue,
+    highlight = highlightOptions(
+      weight = 3,
+      color = "black",
+      fillOpacity = 1,
+      bringToFront = TRUE),
+    label = adminpopup,
+    labelOptions = labelOptions(
+      textsize = "12px",
+      direction = "auto"
+    )
+    
+  ) %>% addLegend(
+    pal = pal, values = ~situation$`Beneficiary Targeting`,
+    opacity = 0.7, title = "Geographical tareting", position = "topright"
+  )
+
+
+```
+
+
+
+
+### Détail collecte
+788 ménages ont été enquêtés à Kousseri sur un total de 5000 ménages attendus soit un quota de 16%  atteint
+
+```{r include=FALSE}
+dataset1 <- read_fst("data/dataset1.fst")
+
+dataset_new_caseload <- dataset1 |> filter(
+  Survey_date >= "2024-11-10"
+)
+
+arrond_collecte <- dataset_new_caseload |> group_by(ADMIN2Name,ADMIN3Name) |> count(ADMIN4Name)
+arrond_collecte <- arrond_collecte |> group_by(ADMIN2Name,ADMIN3Name) |> count()
+arrond_collecte <- arrond_collecte |> rename(
+  nb_village = n
+)
+enq <- dataset_new_caseload |> group_by(ADMIN3Name) |> count()
+enq <- enq |> rename(
+  nb_menage = n
+)
+
+data_collecte <- arrond_collecte |> left_join(enq,by = "ADMIN3Name")
+
+# datatable(data_collecte)
+
+# liq_boum <- data.frame(val = c(data_collecte$nb_menage[1]/5000,0.5,0.4))
+# liq_kousseri_graph <- liq_boum |> e_charts() |> e_liquid(val) |> e_title("Avancement  Kousseri", 
+#           left = "center", top = 2, 
+#           textStyle = list(fontSize = 15))|> 
+#   e_toolbox_feature("saveAsImage")
+
+date_collecte <- dataset_new_caseload |> group_by(Survey_date) |> count()
+rownames(date_collecte) <- NULL
+date_collecte <- as.data.frame(date_collecte)
+
+date_graph <- date_collecte |>
+  e_charts(x = Survey_date) |>
+  e_line(serie = n) |>
+  e_x_axis(type='category') |>
+  e_tooltip() |> 
+  e_legend(show = FALSE) |> 
+  e_labels() |> 
+  e_title("Donnée total par Jour", 
+          left = "center", top = 5, 
+          textStyle = list(fontSize = 15)) |> 
+  e_toolbox_feature("saveAsImage")
+
+admin_FN <- dataset_new_caseload |> group_by(Survey_date,ADMIN3Name) |> count()
+
+graph_depart <- admin_FN |> group_by(Survey_date) |>
+  e_charts(ADMIN3Name,timeline = TRUE) |>
+  e_timeline_opts(autoPlay = TRUE, top = 60) |>
+  e_bar(n) |>
+  e_labels(position = 'insideTop') |>
+  e_legend(show = FALSE) |>
+  e_tooltip() |>
+  e_grid(top = 100) |>
+  e_title("Donnée par Arrondissement par Jour",
+          left = "center", top = 5,
+          textStyle = list(fontSize = 15))|>
+  e_toolbox_feature("saveAsImage")
+
+
+enq_kousseri <- enq |> filter(
+  ADMIN3Name == "Kousseri"
+)
+
+enq_kousseri <- enq_kousseri |>mutate(
+  perc_atteint = round(nb_menage/5000,2)
+)
+
+liq_boum <- data.frame(val = c(enq_kousseri$perc_atteint[1],0.5,0.4))
+liq_boum_graph <- liq_boum |> e_charts() |> e_liquid(val) |> e_title("Avancement  Kousseri", 
+                                                                     left = "center", top = 2, 
+                                                                     textStyle = list(fontSize = 15))|> 
+  e_toolbox_feature("saveAsImage")
+
+
+```
+
+```{r echo=FALSE}
+#| layout-ncol: 3
+#| layout: [[45,-10, 45], [-10], [45,-10, 45]]
+graph_depart
+date_graph
+
+```
+
+```{r echo=FALSE, warning=FALSE}
+
+#| layout-ncol: 3
+#| layout: [[45,-10, 45], [-10], [45,-10, 45]]
+liq_boum_graph
+datatable(data_collecte)
+```
+
+
+## Situation sur le Terrain
+
+![](image/IMG-20241014-WA0080.jpg){width="216"} ![](image/IMG-20241015-WA0040.jpg){width="330"}
