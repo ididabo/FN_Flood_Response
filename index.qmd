@@ -167,7 +167,7 @@ situation %>% leaflet() %>%
 
 
 ### Détail collecte
-788 ménages ont été enquêtés à Kousseri sur un total de 5000 ménages attendus soit un quota de 16%  atteint
+1514 ménages ont été enquêtés à Kousseri sur un total de 5000 ménages attendus soit un quota de 30%  atteint
 
 ```{r include=FALSE}
 dataset1 <- read_fst("data/dataset1.fst")
