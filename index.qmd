@@ -3,7 +3,7 @@ title: "Flood Response in Far-North"
 author:  
    Idrissa DABO/RAM Officer
 title-block-banner: "#D7DBDD"
-date-modified: "11/17/2024"
+date-modified: "11/18/2024"
 date-format: "MM/D/YYYY"
 lang: fr
 language: 
@@ -167,7 +167,7 @@ situation %>% leaflet() %>%
 
 
 ### Détail collecte
-2978 ménages ont été enquêtés à Kousseri sur un total de 5000 ménages attendus soit un quota de 60%  atteint
+3660 ménages ont été enquêtés à Kousseri sur un total de 5000 ménages attendus soit un quota de 73%  atteint
 
 ```{r include=FALSE}
 dataset1 <- read_fst("data/dataset1.fst")
