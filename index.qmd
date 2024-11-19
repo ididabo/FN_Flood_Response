@@ -3,7 +3,7 @@ title: "Flood Response in Far-North"
 author:  
    Idrissa DABO/RAM Officer
 title-block-banner: "#D7DBDD"
-date-modified: "11/18/2024"
+date-modified: "11/19/2024"
 date-format: "MM/D/YYYY"
 lang: fr
 language: 
@@ -105,7 +105,7 @@ situation %>% leaflet() %>%
 
 ## Vérification/Priorisation
 
-Vérication et Priorisation La priorisation des bénéficiaires a été finalisé dans tous les arrondissements hormis à Kousseri  ou la collecte est encours et à Makari ou les ménages seront également enquêtés le plus rapidement possible.
+La vérification et la priorisation des bénéficiaires ont été finalisées dans tous les arrondissements, à l'exception de Kousseri et Makary, où la collecte est encore en cours pour un caseload supplémentaire.
 
 ```{r echo=FALSE, warning=FALSE}
 situation <- readxl::read_xlsx("data/situation.xlsx")
@@ -167,7 +167,7 @@ situation %>% leaflet() %>%
 
 
 ### Détail collecte
-3660 ménages ont été enquêtés à Kousseri sur un total de 5000 ménages attendus soit un quota de 73%  atteint
+4055 ménages ont été enquêtés à Kousseri sur un total de 5000 (30000/6) ménages attendus soit un quota de 81%  atteint. A Makary, 176 ménages ont été enquêtés sur un total de 3333 attendu (calculés sur une base de 20 000 individus divisés par 6) soit un quota de 5%
 
 ```{r include=FALSE}
 dataset1 <- read_fst("data/dataset1.fst")
@@ -247,21 +247,80 @@ liq_boum_graph <- liq_boum |> e_charts() |> e_liquid(val) |> e_title("Avancement
   e_toolbox_feature("saveAsImage")
 
 
+# Makary
+enq_Makary <- enq |> filter(
+  ADMIN3Name == "Makary"
+)
+
+enq_Makary <- enq_Makary |>mutate(
+  perc_atteint = round(nb_menage/3333,2)
+)
+
+liq_boum_makary <- data.frame(val = c(enq_Makary$perc_atteint[1],0.5,0.4))
+liq_boum_graph_makary <- liq_boum_makary |> e_charts() |> e_liquid(val) |> e_title("Avancement  Makary", 
+                                                                     left = "center", top = 2, 
+                                                                     textStyle = list(fontSize = 15))|> 
+  e_toolbox_feature("saveAsImage")
+
 ```
 
-```{r echo=FALSE}
-#| layout-ncol: 3
-#| layout: [[45,-10, 45], [-10], [45,-10, 45]]
+:::: {.columns}
+
+::: {.column width="50%"}
+```{r echo=FALSE, warning=FALSE}
 graph_depart
-date_graph
-
 ```
+
+:::
+
+::: {.column width="50%"}
+```{r echo=FALSE, warning=FALSE}
+date_graph
+```
+
+:::
+
+::::
+
+
+<!-- ```{r echo=FALSE} -->
+<!-- #| layout-ncol: 3 -->
+<!-- #| layout: [[45,-10, 45], [-10], [45,-10, 45]] -->
+<!-- graph_depart -->
+<!-- date_graph -->
+
+<!-- ``` -->
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{r echo=FALSE, warning=FALSE}
+liq_boum_graph
+```
+
+:::
+
+::: {.column width="50%"}
+```{r echo=FALSE, warning=FALSE}
+liq_boum_graph_makary
+```
+
+:::
+
+::::
+
+
+<!-- ```{r echo=FALSE, warning=FALSE} -->
+
+<!-- #| layout-ncol: 3 -->
+<!-- #| layout: [[45,-10, 45], [-10], [45,-10, 45]] -->
+<!-- liq_boum_graph -->
+<!-- liq_boum_graph_makary -->
+
+<!-- ``` -->
 
 ```{r echo=FALSE, warning=FALSE}
-
-#| layout-ncol: 3
-#| layout: [[45,-10, 45], [-10], [45,-10, 45]]
-liq_boum_graph
 datatable(data_collecte)
 ```
 
