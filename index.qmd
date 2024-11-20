@@ -3,7 +3,7 @@ title: "Flood Response in Far-North"
 author:  
    Idrissa DABO/RAM Officer
 title-block-banner: "#D7DBDD"
-date-modified: "11/19/2024"
+date-modified: "11/20/2024"
 date-format: "MM/D/YYYY"
 lang: fr
 language: 
@@ -167,7 +167,7 @@ situation %>% leaflet() %>%
 
 
 ### Détail collecte
-4055 ménages ont été enquêtés à Kousseri sur un total de 5000 (30000/6) ménages attendus soit un quota de 81%  atteint. A Makary, 176 ménages ont été enquêtés sur un total de 3333 attendu (calculés sur une base de 20 000 individus divisés par 6) soit un quota de 5%
+5033 ménages ont été enquêtés à Kousseri sur un total de 5000 (30000/6) ménages attendus soit un quota de 101%  atteint. A Makary, 940 ménages ont été enquêtés sur un total de 3333 attendu (calculés sur une base de 20 000 individus divisés par 6) soit un quota de 28%
 
 ```{r include=FALSE}
 dataset1 <- read_fst("data/dataset1.fst")
