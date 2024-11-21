@@ -3,7 +3,7 @@ title: "Flood Response in Far-North"
 author:  
    Idrissa DABO/RAM Officer
 title-block-banner: "#D7DBDD"
-date-modified: "11/20/2024"
+date-modified: "11/21/2024"
 date-format: "MM/D/YYYY"
 lang: fr
 language: 
@@ -105,7 +105,7 @@ situation %>% leaflet() %>%
 
 ## Vérification/Priorisation
 
-La vérification et la priorisation des bénéficiaires ont été finalisées dans tous les arrondissements, à l'exception de Kousseri et Makary, où la collecte est encore en cours pour un caseload supplémentaire.
+La vérification et la priorisation des bénéficiaires ont été finalisées dans tous les arrondissements, à l'exception de Makary, où la collecte est encore en cours pour un caseload supplémentaire.
 
 ```{r echo=FALSE, warning=FALSE}
 situation <- readxl::read_xlsx("data/situation.xlsx")
@@ -167,7 +167,7 @@ situation %>% leaflet() %>%
 
 
 ### Détail collecte
-5033 ménages ont été enquêtés à Kousseri sur un total de 5000 (30000/6) ménages attendus soit un quota de 101%  atteint. A Makary, 940 ménages ont été enquêtés sur un total de 3333 attendu (calculés sur une base de 20 000 individus divisés par 6) soit un quota de 28%
+6006 ménages ont été enquêtés à Kousseri soit un quota de plus de 20% de celui attendu. A Makary, 985 ménages ont été enquêtés sur un total de 3333 attendu (calculés sur une base de 20 000 individus divisés par 6) soit un quota de 30%
 
 ```{r include=FALSE}
 dataset1 <- read_fst("data/dataset1.fst")
