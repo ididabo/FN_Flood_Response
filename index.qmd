@@ -3,7 +3,7 @@ title: "Flood Response in Far-North"
 author:  
    Idrissa DABO/RAM Officer
 title-block-banner: "#D7DBDD"
-date-modified: "11/21/2024"
+date-modified: "11/25/2024"
 date-format: "MM/D/YYYY"
 lang: fr
 language: 
@@ -105,7 +105,7 @@ situation %>% leaflet() %>%
 
 ## Vérification/Priorisation
 
-La vérification et la priorisation des bénéficiaires ont été finalisées dans tous les arrondissements, à l'exception de Makary, où la collecte est encore en cours pour un caseload supplémentaire.
+La vérification et la priorisation des bénéficiaires ont été finalisées dans tous les arrondissements, à l'exception de Makary,Goulfey et Logone-Birni où la collecte est encore en cours pour un caseload supplémentaire.
 
 ```{r echo=FALSE, warning=FALSE}
 situation <- readxl::read_xlsx("data/situation.xlsx")
@@ -167,7 +167,8 @@ situation %>% leaflet() %>%
 
 
 ### Détail collecte
-6006 ménages ont été enquêtés à Kousseri soit un quota de plus de 20% de celui attendu. A Makary, 985 ménages ont été enquêtés sur un total de 3333 attendu (calculés sur une base de 20 000 individus divisés par 6) soit un quota de 30%
+2593 ménages ont été enquêtés à Goulfey sur un total de 2500 (15000/6) attendus soit un quota de  104%. A Makary, 2058 ménages ont été enquêtés sur un total de 2500 attendus (calculés sur une base de 15 000 individus divisés par 6) soit un quota de 82%.
+Au Logone-Birni 1980 ménages ont été enquêtés sur un total de 1667 attendus (10000/6) soit un quota de 119%
 
 ```{r include=FALSE}
 dataset1 <- read_fst("data/dataset1.fst")
@@ -177,7 +178,7 @@ dataset_new_caseload <- dataset1 |> filter(
 )
 
 dataset_new_caseload <- dataset_new_caseload |> filter(
-  ADMIN3Name %in% c("Kousseri","Makary") 
+  ADMIN3Name %in% c("Makary","Goulfey","Logone-Birni" ) 
 )
 
 arrond_collecte <- dataset_new_caseload |> group_by(ADMIN2Name,ADMIN3Name) |> count(ADMIN4Name)
@@ -231,7 +232,7 @@ graph_depart <- admin_FN |> group_by(Survey_date) |>
           textStyle = list(fontSize = 15))|>
   e_toolbox_feature("saveAsImage")
 
-
+# Kousseri
 enq_kousseri <- enq |> filter(
   ADMIN3Name == "Kousseri"
 )
@@ -253,13 +254,44 @@ enq_Makary <- enq |> filter(
 )
 
 enq_Makary <- enq_Makary |>mutate(
-  perc_atteint = round(nb_menage/3333,2)
+  perc_atteint = round(nb_menage/2500,2)
 )
 
 liq_boum_makary <- data.frame(val = c(enq_Makary$perc_atteint[1],0.5,0.4))
 liq_boum_graph_makary <- liq_boum_makary |> e_charts() |> e_liquid(val) |> e_title("Avancement  Makary", 
                                                                      left = "center", top = 2, 
                                                                      textStyle = list(fontSize = 15))|> 
+  e_toolbox_feature("saveAsImage")
+
+
+# Goulfey
+enq_goulfey <- enq |> filter(
+  ADMIN3Name == "Goulfey"
+)
+
+enq_goulfey <- enq_goulfey |>mutate(
+  perc_atteint = round(nb_menage/2500,2)
+)
+
+liq_boum_goulfey <- data.frame(val = c(enq_goulfey$perc_atteint[1],0.5,0.4))
+liq_boum_graph_goulfey <- liq_boum_goulfey |> e_charts() |> e_liquid(val) |> e_title("Avancement  Goulfey", 
+                                                                                   left = "center", top = 2, 
+                                                                                   textStyle = list(fontSize = 15))|> 
+  e_toolbox_feature("saveAsImage")
+
+# Logone-Birni
+enq_logonebirni <- enq |> filter(
+  ADMIN3Name == "Logone-Birni"
+)
+
+enq_logonebirni <- enq_logonebirni |>mutate(
+  perc_atteint = round(nb_menage/1667,2)
+)
+
+liq_boum_logonebirni <- data.frame(val = c(enq_logonebirni$perc_atteint[1],0.5,0.4))
+liq_boum_graph_logonebirni <- liq_boum_logonebirni |> e_charts() |> e_liquid(val) |> e_title("Avancement  Logone-Birni", 
+                                                                                   left = "center", top = 2, 
+                                                                                   textStyle = list(fontSize = 15))|> 
   e_toolbox_feature("saveAsImage")
 
 ```
@@ -294,16 +326,23 @@ date_graph
 
 :::: {.columns}
 
-::: {.column width="50%"}
+::: {.column width="33%"}
 ```{r echo=FALSE, warning=FALSE}
-liq_boum_graph
+liq_boum_graph_goulfey
 ```
 
 :::
 
-::: {.column width="50%"}
+::: {.column width="33%"}
 ```{r echo=FALSE, warning=FALSE}
 liq_boum_graph_makary
+```
+
+:::
+
+::: {.column width="33%"}
+```{r echo=FALSE, warning=FALSE}
+liq_boum_graph_logonebirni
 ```
 
 :::
